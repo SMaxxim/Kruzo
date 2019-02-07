@@ -20,4 +20,8 @@ class MyInputForm:
     inputSurname =
     inputName = 
   layout = 
+  
+  
+  sharedState
+  sharedStateApi
 ```  
