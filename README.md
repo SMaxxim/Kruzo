@@ -16,14 +16,20 @@ What i like in react:
 So what i want to acheive: 
 
 ```
+interface Layout<T> {
+   [in key of T]: 
+}
+
 class MyInputForm:
   state = 
      surname =
      name = 
-  personDataInput = 
-    surname =
-    name = 
-  layout = 
+  PersonDataInput = class
+    surname = new Input()
+    name = new Input()
+  layout = (elements: IElements<PersonDataInput>) -> {
+      elements.surname  
+  }
     grid 
       personDataInput.surname
       personDataInput.name
