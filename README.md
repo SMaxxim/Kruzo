@@ -3,6 +3,7 @@ ideas:
 What i dont like most in modern react and react-like frameworks:
 need for mixed up in your code: 
   - view of visual elements: size, font, color, etc.;
+  - mapping data to elements
   - behaviour logic: event handlers; 
   - layout logic: i hate that most, there are  so many diferent ways for layout your elements: flex, grid, style library wrappers for grid   and flex like Grid component in Material-ui, and you cannot just move all that logic in some separate module of your code (yes you can do it by writing some component who render Grid or div with some style, but that means you need to add extra divs to you dom);
   
@@ -16,12 +17,24 @@ So what i want to acheive:
 
 ```
 class MyInputForm:
-  groupBox = 
-    inputSurname =
-    inputName = 
+  state = 
+     surname =
+     name = 
+  personDataInput = 
+    surname =
+    name = 
   layout = 
-  
+    grid 
+      personDataInput.surname
+      personDataInput.name
+  dataMapping =   
+    personDataInput.surname.value = surname    
+    personDataInput.name.value = name    
+  view = 
+    personDataInput.surname.color =
+    personDataInput.name.font =
   
   sharedState
   sharedStateApi
 ```  
+
