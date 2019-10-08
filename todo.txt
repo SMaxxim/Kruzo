@@ -1,0 +1,203 @@
+
+модели
+  view model 
+  remote model
+  request model
+
+        
+комбинация ActionModelToRemote
+
+
+
+class App {
+
+ var downloads = HRefTo(::DownloadsPage);
+ var admin = HRefTo(::AdminPage);
+
+ var layout = bootstrapLayout(this).build {
+    navbar {
+        +admin;
+        +downloads;
+    }
+ }
+
+ var style = bootstrapStyle(this).build {
+    style(downloads) {
+       color
+    }
+
+ }
+
+}
+
+если layout это функция, то как по этой функции узнать за кем следить?
+следить надо только за моделью? 
+
+ViewModel ClientModel ServerModel DBModel
+
+ServerStore.put(clientModel)
+ServerStore.get()
+ServerStore.getMySomeModel()
+
+interface ILoginApi {
+  fun login(login, password: String);
+  fun logout();
+}
+
+interface IUserApi {
+  fun user(): ServerUser;
+  fun profile(): ServerUserProfile;
+}
+
+interface ITodoListApi {
+  fun get(userID): TodoList;
+}
+
+class MyServerRequestHandler: ILoginApi by LoginApiHandler, IUserApi by UserApiHandler {
+  val todoListStore: TodoListApiHandler;
+}
+
+TodoList 
+
+DBModelFor<TodoList>
+ClientModelFor<TodoList>
+
+class ClientModelFor<>
+
+
+interface IViewToClientAction(
+  val IViewModel;
+  ) {
+
+  fun act(): IClientModel;
+}
+
+<T>(
+   clientModel: 
+
+   act()
+
+restAPI.build(MyServerRequestHandler);
+
+object MyServerApi: 
+         ILoginApi by LoginApi, 
+         IUserApi by UserApi {
+  val todoListStore: TodoListApi;
+}
+
+serverTodoList = MyServerApi.todoListStore.get(userID);
+clientTodoList = ClientTodoList(serverTodoList);
+ViewModel
+
+class TodoItem( 
+  val text: String
+): Model;
+
+
+class ViewModelFor<T>: T implements IViewModel;
+
+class ClientModelFor<T>: T implements IClientModel;
+
+class ServerModelFor<T>: T implements IServerModel;
+
+class TodoList( 
+  val todos: ModelListOf<TodoItem>()
+): Model;
+
+class VMTodoListPage: ViewModel {
+  val logined: Boolean;
+  val vmLoginForm = VMLoginForm();
+  val vmTodoList = ViewModelFor<TodoList>();
+} 
+
+class MapToClient<SrcT: IViewModel, DstT: IClientModel>(
+   val viewModel: SrcT): IViewToClientAction {
+
+  fun act(): DstT {
+    return DstT.copyFrom(viewModel);
+  }
+
+}
+
+
+onSubmit += do { MapToClient() };
+
+clientModel.onChange += do { MapToServer() };
+
+class AddTodoItemAction: IViewToClientAction
+
+
+class VMLoginForm: ViewModel {
+  val login: String = "";
+  @secure
+  val password: String = "";
+}
+
+interface IViewAction(
+  val srcViewModel: IViewModel
+  ) {
+
+  fun act(): IViewModel;
+}
+
+
+class LoginAction: IViewAction(
+    vmPage: VMTodoListPage) {
+
+  override fun act(): VMTodoListPage {
+    return vmPage.copy(logined = True);
+  }
+}
+
+class LogOutAction: IViewAction(
+    vmPage: VMTodoListPage) {
+
+  override fun act(): VMTodoListPage {
+    return vmPage.copy(logined = False);
+  }
+}
+
+val actions = compose {
+  LoginAction(a)
+}
+then {
+  if (a.user.is_admin)
+    BuildAdminPage()
+  else
+    FetchUserAction();
+}
+
+fun apply(f: () -> IViewAction) {
+  a = f();
+  newState = a();
+}
+
+class TodoListPage: UIElement { 
+   val vmPage = VMTodoListPage();
+
+   val loginForm = FormOf(vmPage.vmLoginForm);
+   val todoList = ViewOf(vmPage.vmTodoList);
+   val logOutRef = HRef('/logout');
+
+   override fun layout() {
+     return Layout(this).build {
+       if (!vmPage.logined) {
+         +loginForm
+       }
+       else {
+         +logOutRef;
+         +todoList;
+       }
+     }
+   }
+
+   override fun handlers() {
+     loginForm.onSubmit += apply {
+        LoginAction(vmPage)
+     }
+     logOut.onClick += apply { 
+        LogOutAction(vmPage) 
+     };
+   }
+}
+
